@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Trending Topics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        #loading {
+            text-align: center;
+            display: none;
+        }
+        #trends {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .trend-item {
+            font-size: 18px;
+            color: #333;
+            margin: 10px 0;
+        }
+        #error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Twitter Trending Topics</h1>
+
+    <div id="loading">
+        <p>Loading...</p>
+    </div>
+
+    <div id="error"></div>
+
+    <div id="trends"></div>
+
+    <div style="text-align:center; margin-top: 20px;">
+        <button onclick="fetchTrends()">Fetch Trending Topics</button>
+    </div>
+
+    <script>
+        function fetchTrends() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('trends').innerHTML = '';
+
+            fetch('/fetch_trends')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    if (data.status === 'success') {
+                        const trends = data.data;
+                        let trendsHTML = "<h3>Top 5 Twitter Trends:</h3>";
+                        for (let i = 0; i < 5; i++) {
+                            if (trends[`trend${i + 1}`]) {
+                                trendsHTML += `<div class="trend-item">${trends[`trend${i + 1}`]}</div>`;
+                            }
+                        }
+                        document.getElementById('trends').innerHTML = trendsHTML;
+                    } else {
+                        document.getElementById('error').textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error').textContent = 'An error occurred while fetching trends.';
+                });
+        }
+    </script>
+
+</body>
+</html>
