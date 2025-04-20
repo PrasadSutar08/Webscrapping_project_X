@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from pymongo import MongoClient
 from datetime import datetime
@@ -26,8 +28,7 @@ def fetch_twitter_trends():
     # options.add_argument('--headless')  # Remove this line to run with UI visible
     options.add_argument('--disable-gpu')  # Disable GPU for smoother execution
     options.add_argument('--no-sandbox')  # Disable sandboxing for Linux environments
-    service = Service(CHROMEDRIVER_PATH)
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.implicitly_wait(10)
 
     try:
